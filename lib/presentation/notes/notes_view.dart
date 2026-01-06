@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_app/core/constants/app_colors.dart';
+import 'package:notes_app/presentation/auth/auth_view_model.dart';
 import 'package:notes_app/presentation/widgets/app_searchbar.dart';
 
 class NotesView extends ConsumerStatefulWidget {
@@ -23,6 +24,15 @@ class _NotesViewState extends ConsumerState<NotesView> {
           fontWeight: FontWeight.bold,
         ),
         backgroundColor: AppColors.red,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await ref.read(authProvider).signOut();
+            },
+            icon: const Icon(Icons.logout),
+            color: AppColors.white,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

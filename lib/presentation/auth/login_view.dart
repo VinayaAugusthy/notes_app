@@ -1,20 +1,23 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_app/core/constants/app_colors.dart';
 import 'package:notes_app/core/constants/app_strings.dart';
 import 'package:notes_app/core/extensions/media_query_extensions.dart';
+import 'package:notes_app/core/utils/app_snackbar.dart';
+import 'package:notes_app/presentation/auth/auth_view_model.dart';
 import 'package:notes_app/presentation/auth/signup_view.dart';
 import 'package:notes_app/presentation/widgets/app_button.dart';
 import 'package:notes_app/presentation/widgets/app_text_form_field.dart';
 
-class LoginView extends StatefulWidget {
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final loginFormKey = GlobalKey<FormState>();
@@ -26,8 +29,27 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  Future<void> _handleLogin() async {
+    if (loginFormKey.currentState?.validate() ?? false) {
+      final authViewModel = ref.read(authProvider);
+      final success = await authViewModel.signIn(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      if (!success && mounted) {
+        final errorMessage = authViewModel.errorMessage;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && errorMessage != null) {
+            AppSnackbar.showError(context, errorMessage);
+          }
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authVM = ref.watch(authProvider);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(context.screenWidth / 16),
@@ -63,12 +85,16 @@ class _LoginViewState extends State<LoginView> {
                     SizedBox(height: 30),
                     SizedBox(
                       width: context.screenWidth,
-                      child: AppButton(
-                        buttonText: AppStrings.login,
-                        onPressed: () {
-                          if (loginFormKey.currentState?.validate() ?? false) {}
-                        },
-                      ),
+                      child: authVM.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.red,
+                              ),
+                            )
+                          : AppButton(
+                              buttonText: AppStrings.login,
+                              onPressed: _handleLogin,
+                            ),
                     ),
 
                     SizedBox(height: 30),
