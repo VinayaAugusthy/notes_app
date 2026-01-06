@@ -26,7 +26,13 @@ class _NotesViewState extends ConsumerState<NotesView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(children: [AppSearchbar(), Text('Notes')]),
+        child: Column(children: [AppSearchbar()]),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: AppColors.red,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: const Icon(Icons.add, color: AppColors.white),
       ),
     );
   }
