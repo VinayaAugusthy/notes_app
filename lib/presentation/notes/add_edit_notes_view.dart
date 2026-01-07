@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:notes_app/core/constants/app_colors.dart';
 import 'package:notes_app/core/constants/app_strings.dart';
 import 'package:notes_app/core/utils/app_snackbar.dart';
 import 'package:notes_app/presentation/notes/notes_view_model.dart';
 import 'package:notes_app/presentation/widgets/app_button.dart';
+import 'package:notes_app/presentation/widgets/app_loader.dart';
 import 'package:notes_app/presentation/widgets/app_text_form_field.dart';
 
 class AddEditNotesView extends ConsumerStatefulWidget {
@@ -91,23 +91,13 @@ class _AddEditNotesViewState extends ConsumerState<AddEditNotesView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditMode ? AppStrings.editNote : AppStrings.addNote),
-        centerTitle: true,
-        titleTextStyle: const TextStyle(
-          color: AppColors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        backgroundColor: AppColors.red,
-        foregroundColor: AppColors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: formKey,
           child: notesVM.isLoading && isEditMode && titleController.text.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.red),
-                )
+              ? AppLoader()
               : SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -138,11 +128,7 @@ class _AddEditNotesViewState extends ConsumerState<AddEditNotesView> {
                       ),
                       const SizedBox(height: 24),
                       notesVM.isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.red,
-                              ),
-                            )
+                          ? AppLoader()
                           : AppButton(
                               onPressed: _handleSave,
                               buttonText: AppStrings.save,

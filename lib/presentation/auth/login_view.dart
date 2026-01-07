@@ -8,6 +8,7 @@ import 'package:notes_app/core/utils/app_snackbar.dart';
 import 'package:notes_app/presentation/auth/auth_view_model.dart';
 import 'package:notes_app/presentation/auth/signup_view.dart';
 import 'package:notes_app/presentation/widgets/app_button.dart';
+import 'package:notes_app/presentation/widgets/app_loader.dart';
 import 'package:notes_app/presentation/widgets/app_text_form_field.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -86,11 +87,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     SizedBox(
                       width: context.screenWidth,
                       child: authVM.isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.red,
-                              ),
-                            )
+                          ? AppLoader()
                           : AppButton(
                               buttonText: AppStrings.login,
                               onPressed: _handleLogin,

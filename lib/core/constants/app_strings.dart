@@ -31,4 +31,9 @@ class AppStrings {
   static const String notes = 'Notes';
   static const String noNotesFound = 'No notes found';
   static const String userNotAuthenticated = 'User not authenticated';
+  static const String noteNotFound = 'Note not found';
+  static const String noPermissionToAccessNote =
+      'You do not have permission to access this note';
+  static const String failedToFetchNote = 'Failed to fetch note';
+  static const String search = 'Search...';
 }

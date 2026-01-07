@@ -123,7 +123,7 @@ class NotesViewModel extends ChangeNotifier {
 
       if (!docSnapshot.exists) {
         _isLoading = false;
-        _errorMessage = 'Note not found';
+        _errorMessage = AppStrings.noteNotFound;
         notifyListeners();
         return null;
       }
@@ -133,7 +133,7 @@ class NotesViewModel extends ChangeNotifier {
 
       if (note.userId != currentUserId) {
         _isLoading = false;
-        _errorMessage = 'You do not have permission to access this note';
+        _errorMessage = AppStrings.noPermissionToAccessNote;
         notifyListeners();
         return null;
       }
@@ -143,7 +143,7 @@ class NotesViewModel extends ChangeNotifier {
       return note;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = 'Failed to fetch note: ${e.toString()}';
+      _errorMessage = '${AppStrings.failedToFetchNote}: ${e.toString()}';
       notifyListeners();
       return null;
     }
@@ -173,11 +173,6 @@ class NotesViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-  }
-
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
   }
 }
 

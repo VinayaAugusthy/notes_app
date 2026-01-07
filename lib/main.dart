@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:notes_app/core/constants/app_colors.dart';
 import 'package:notes_app/firebase_options.dart';
 import 'package:notes_app/presentation/auth/auth_wrapper.dart';
 
@@ -17,7 +18,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Notes App',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.red,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: AppColors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          foregroundColor: AppColors.white,
+        ),
+      ),
       home: const AuthWrapper(),
       debugShowCheckedModeBanner: false,
     );

@@ -7,6 +7,7 @@ import 'package:notes_app/presentation/auth/auth_view_model.dart';
 import 'package:notes_app/presentation/notes/add_edit_notes_view.dart';
 import 'package:notes_app/presentation/notes/notes_view_model.dart';
 import 'package:notes_app/presentation/widgets/app_confirmation_dialog.dart';
+import 'package:notes_app/presentation/widgets/app_loader.dart';
 import 'package:notes_app/presentation/widgets/app_searchbar.dart';
 
 class NotesView extends ConsumerStatefulWidget {
@@ -28,7 +29,6 @@ class _NotesViewState extends ConsumerState<NotesView> {
   Future<void> _showDeleteConfirmationDialog(
     BuildContext context,
     String noteId,
-    String noteTitle,
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -63,20 +63,12 @@ class _NotesViewState extends ConsumerState<NotesView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppStrings.notes),
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: AppColors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        backgroundColor: AppColors.red,
         actions: [
           IconButton(
             onPressed: () async {
               await ref.read(authProvider).signOut();
             },
             icon: const Icon(Icons.logout),
-            color: AppColors.white,
           ),
         ],
       ),
@@ -88,9 +80,7 @@ class _NotesViewState extends ConsumerState<NotesView> {
             SizedBox(height: 10),
             Expanded(
               child: notesVM.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: AppColors.red),
-                    )
+                  ? AppLoader()
                   : notesVM.notes.isEmpty
                   ? Center(
                       child: Text(
@@ -110,6 +100,12 @@ class _NotesViewState extends ConsumerState<NotesView> {
                           title: Text(
                             note.title,
                             style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            note.content,
+                            style: TextStyle(color: AppColors.grey),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -134,7 +130,6 @@ class _NotesViewState extends ConsumerState<NotesView> {
                                   _showDeleteConfirmationDialog(
                                     context,
                                     note.id,
-                                    note.title,
                                   );
                                 },
                                 icon: const Icon(
@@ -144,7 +139,6 @@ class _NotesViewState extends ConsumerState<NotesView> {
                               ),
                             ],
                           ),
-                          onTap: () {},
                         );
                       },
                     ),

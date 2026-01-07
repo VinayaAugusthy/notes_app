@@ -96,11 +96,6 @@ class AuthViewModel extends ChangeNotifier {
         return 'Authentication failed. Please try again.';
     }
   }
-
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
-  }
 }
 
 final authProvider = ChangeNotifierProvider<AuthViewModel>(
