@@ -32,7 +32,7 @@ class AuthViewModel extends ChangeNotifier {
       return true;
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
-      _errorMessage = _getErrorMessage(e.code);
+      _errorMessage = e.message ?? AppStrings.failedToSignUp;
       notifyListeners();
       return false;
     } catch (e) {
@@ -60,7 +60,7 @@ class AuthViewModel extends ChangeNotifier {
       return true;
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
-      _errorMessage = _getErrorMessage(e.code);
+      _errorMessage = e.message ?? AppStrings.failedToLogin;
       notifyListeners();
       return false;
     } catch (e) {
@@ -86,28 +86,28 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  String _getErrorMessage(String code) {
-    switch (code) {
-      case 'weak-password':
-        return 'The password provided is too weak.';
-      case 'email-already-in-use':
-        return 'An account already exists for that email.';
-      case 'invalid-credential':
-        return 'The provided credentials are invalid.';
-      case 'user-disabled':
-        return 'This user account has been disabled.';
-      case 'user-not-found':
-        return 'No user found for that email.';
-      case 'wrong-password':
-        return 'Wrong password provided.';
-      case 'too-many-requests':
-        return 'Too many requests. Please try again later.';
-      case 'operation-not-allowed':
-        return 'Email/password accounts are not enabled.';
-      default:
-        return 'Authentication failed. Please try again.';
-    }
-  }
+  // String _getErrorMessage(String code) {
+  //   switch (code) {
+  //     case 'weak-password':
+  //       return 'The password provided is too weak.';
+  //     case 'email-already-in-use':
+  //       return 'An account already exists for that email.';
+  //     case 'invalid-credential':
+  //       return 'The provided credentials are invalid.';
+  //     case 'user-disabled':
+  //       return 'This user account has been disabled.';
+  //     case 'user-not-found':
+  //       return 'No user found for that email.';
+  //     case 'wrong-password':
+  //       return 'Wrong password provided.';
+  //     case 'too-many-requests':
+  //       return 'Too many requests. Please try again later.';
+  //     case 'operation-not-allowed':
+  //       return 'Email/password accounts are not enabled.';
+  //     default:
+  //       return 'Authentication failed. Please try again.';
+  //   }
+  // }
 }
 
 final authProvider = ChangeNotifierProvider<AuthViewModel>(

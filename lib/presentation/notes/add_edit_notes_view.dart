@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:notes_app/core/constants/app_colors.dart';
 import 'package:notes_app/core/constants/app_strings.dart';
 import 'package:notes_app/core/utils/app_snackbar.dart';
 import 'package:notes_app/presentation/notes/notes_view_model.dart';
@@ -121,8 +122,13 @@ class _AddEditNotesViewState extends ConsumerState<AddEditNotesView> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: AppColors.red),
+                            ),
                             hintText: AppStrings.content,
                           ),
+                          cursorColor: AppColors.red,
                           maxLines: 10,
                           minLines: 5,
                           validator: (value) {
