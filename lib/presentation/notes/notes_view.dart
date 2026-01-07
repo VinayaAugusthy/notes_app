@@ -115,7 +115,18 @@ class _NotesViewState extends ConsumerState<NotesView> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddEditNotesView(noteId: note.id),
+                                    ),
+                                  );
+                                  if (mounted) {
+                                    ref.read(notesProvider).fetchNotes();
+                                  }
+                                },
                                 icon: Icon(Icons.edit, color: AppColors.blue),
                               ),
                               IconButton(

@@ -104,6 +104,51 @@ class NotesViewModel extends ChangeNotifier {
     }
   }
 
+  Future<NoteModel?> fetchNoteById(String noteId) async {
+    try {
+      if (currentUserId == null) {
+        _errorMessage = AppStrings.userNotAuthenticated;
+        notifyListeners();
+        return null;
+      }
+
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      final docSnapshot = await _firestore
+          .collection('notes')
+          .doc(noteId)
+          .get();
+
+      if (!docSnapshot.exists) {
+        _isLoading = false;
+        _errorMessage = 'Note not found';
+        notifyListeners();
+        return null;
+      }
+
+      final data = docSnapshot.data()!;
+      final note = NoteModel.fromMap(noteId, data);
+
+      if (note.userId != currentUserId) {
+        _isLoading = false;
+        _errorMessage = 'You do not have permission to access this note';
+        notifyListeners();
+        return null;
+      }
+
+      _isLoading = false;
+      notifyListeners();
+      return note;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'Failed to fetch note: ${e.toString()}';
+      notifyListeners();
+      return null;
+    }
+  }
+
   Future<bool> deleteNote(String noteId) async {
     try {
       if (currentUserId == null) {

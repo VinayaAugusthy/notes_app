@@ -23,6 +23,34 @@ class _AddEditNotesViewState extends ConsumerState<AddEditNotesView> {
   bool get isEditMode => widget.noteId != null;
 
   @override
+  void initState() {
+    super.initState();
+    if (isEditMode && widget.noteId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadNote();
+      });
+    }
+  }
+
+  Future<void> _loadNote() async {
+    final notesVM = ref.read(notesProvider);
+    final note = await notesVM.fetchNoteById(widget.noteId!);
+
+    if (mounted) {
+      if (note != null) {
+        titleController.text = note.title;
+        contentController.text = note.content;
+      } else {
+        final errorMessage = notesVM.errorMessage;
+        if (errorMessage != null) {
+          AppSnackbar.showError(context, errorMessage);
+        }
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  @override
   void dispose() {
     titleController.dispose();
     contentController.dispose();
@@ -76,46 +104,52 @@ class _AddEditNotesViewState extends ConsumerState<AddEditNotesView> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 16),
-                AppTextFormField(
-                  controller: titleController,
-                  hintText: AppStrings.title,
-                  errorMsg: AppStrings.titleRequired,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: contentController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    hintText: AppStrings.content,
-                  ),
-                  maxLines: 10,
-                  minLines: 5,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return AppStrings.contentRequired;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                notesVM.isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: AppColors.red),
-                      )
-                    : AppButton(
-                        onPressed: _handleSave,
-                        buttonText: AppStrings.save,
+          child: notesVM.isLoading && isEditMode && titleController.text.isEmpty
+              ? const Center(
+                  child: CircularProgressIndicator(color: AppColors.red),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 16),
+                      AppTextFormField(
+                        controller: titleController,
+                        hintText: AppStrings.title,
+                        errorMsg: AppStrings.titleRequired,
                       ),
-              ],
-            ),
-          ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: contentController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          hintText: AppStrings.content,
+                        ),
+                        maxLines: 10,
+                        minLines: 5,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return AppStrings.contentRequired;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                      notesVM.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.red,
+                              ),
+                            )
+                          : AppButton(
+                              onPressed: _handleSave,
+                              buttonText: AppStrings.save,
+                            ),
+                    ],
+                  ),
+                ),
         ),
       ),
     );
