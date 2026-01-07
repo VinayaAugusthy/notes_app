@@ -61,89 +61,100 @@ class _SignupViewState extends ConsumerState<SignupView> {
   Widget build(BuildContext context) {
     final authVM = ref.watch(authProvider);
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(context.screenWidth / 16),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Form(
-                key: signUpFormKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppStrings.signUp,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.red,
-                      ),
-                    ),
-                    SizedBox(height: context.screenHeight / 18),
-                    AppTextFormField(
-                      controller: emailController,
-                      hintText: AppStrings.enterEmail,
-                      errorMsg: AppStrings.emailRequired,
-                    ),
-                    SizedBox(height: 30),
-                    AppTextFormField(
-                      controller: passwordController,
-                      hintText: AppStrings.enterPassword,
-                      errorMsg: AppStrings.passwordRequired,
-                      isObscure: true,
-                    ),
-                    SizedBox(height: 30),
-                    TextFormField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Padding(
+          padding: EdgeInsets.all(context.screenWidth / 16),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: signUpFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppStrings.signUp,
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.red,
                         ),
-                        hintText: AppStrings.confirmPassword,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppStrings.confirmPasswordRequired;
-                        } else if (value.trim() !=
-                            passwordController.text.trim()) {
-                          return AppStrings.passwordsNotMatching;
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: 30),
-                    SizedBox(
-                      width: context.screenWidth,
-                      child: authVM.isLoading
-                          ? AppLoader()
-                          : AppButton(
-                              onPressed: _handleSignUp,
-                              buttonText: AppStrings.signUp,
-                            ),
-                    ),
-                    SizedBox(height: 30),
-                    RichText(
-                      text: TextSpan(
-                        text: AppStrings.alreadyHaveAccount,
-                        style: TextStyle(color: AppColors.black),
-                        children: [
-                          TextSpan(
-                            text: AppStrings.login,
-                            style: TextStyle(
-                              color: AppColors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pop(context);
-                              },
+                      SizedBox(height: context.screenHeight / 18),
+                      AppTextFormField(
+                        controller: emailController,
+                        hintText: AppStrings.enterEmail,
+                        errorMsg: AppStrings.emailRequired,
+                      ),
+                      SizedBox(height: 30),
+                      AppTextFormField(
+                        controller: passwordController,
+                        hintText: AppStrings.enterPassword,
+                        errorMsg: AppStrings.passwordRequired,
+                        isObscure: true,
+                      ),
+                      SizedBox(height: 30),
+                      TextFormField(
+                        controller: confirmPasswordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                        ],
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: AppColors.red),
+                          ),
+                          hintText: AppStrings.confirmPassword,
+                        ),
+                        cursorColor: AppColors.red,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppStrings.confirmPasswordRequired;
+                          } else if (value.trim() !=
+                              passwordController.text.trim()) {
+                            return AppStrings.passwordsNotMatching;
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 30),
+                      SizedBox(
+                        width: context.screenWidth,
+                        child: authVM.isLoading
+                            ? AppLoader()
+                            : AppButton(
+                                onPressed: _handleSignUp,
+                                buttonText: AppStrings.signUp,
+                              ),
+                      ),
+                      SizedBox(height: 30),
+                      RichText(
+                        text: TextSpan(
+                          text: AppStrings.alreadyHaveAccount,
+                          style: TextStyle(color: AppColors.black),
+                          children: [
+                            TextSpan(
+                              text: AppStrings.login,
+                              style: TextStyle(
+                                color: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pop(context);
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

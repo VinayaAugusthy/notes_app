@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app/core/constants/app_colors.dart';
 import 'package:notes_app/core/constants/app_strings.dart';
 
 class AppTextFormField extends StatelessWidget {
@@ -20,8 +21,13 @@ class AppTextFormField extends StatelessWidget {
     return TextFormField(
       obscureText: isObscure ?? false,
       controller: controller,
+      cursorColor: AppColors.red,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.red),
+        ),
         hintText: hintText ?? AppStrings.emptyString,
       ),
       validator: (value) {

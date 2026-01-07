@@ -92,50 +92,57 @@ class _AddEditNotesViewState extends ConsumerState<AddEditNotesView> {
       appBar: AppBar(
         title: Text(isEditMode ? AppStrings.editNote : AppStrings.addNote),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: notesVM.isLoading && isEditMode && titleController.text.isEmpty
-              ? AppLoader()
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 16),
-                      AppTextFormField(
-                        controller: titleController,
-                        hintText: AppStrings.title,
-                        errorMsg: AppStrings.titleRequired,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: contentController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          hintText: AppStrings.content,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: formKey,
+            child:
+                notesVM.isLoading && isEditMode && titleController.text.isEmpty
+                ? AppLoader()
+                : SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 16),
+                        AppTextFormField(
+                          controller: titleController,
+                          hintText: AppStrings.title,
+                          errorMsg: AppStrings.titleRequired,
                         ),
-                        maxLines: 10,
-                        minLines: 5,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return AppStrings.contentRequired;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      notesVM.isLoading
-                          ? AppLoader()
-                          : AppButton(
-                              onPressed: _handleSave,
-                              buttonText: AppStrings.save,
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: contentController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                    ],
+                            hintText: AppStrings.content,
+                          ),
+                          maxLines: 10,
+                          minLines: 5,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return AppStrings.contentRequired;
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        notesVM.isLoading
+                            ? AppLoader()
+                            : AppButton(
+                                onPressed: _handleSave,
+                                buttonText: AppStrings.save,
+                              ),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );

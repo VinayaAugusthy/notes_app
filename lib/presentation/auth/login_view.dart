@@ -52,74 +52,80 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Widget build(BuildContext context) {
     final authVM = ref.watch(authProvider);
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(context.screenWidth / 16),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Form(
-                key: loginFormKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppStrings.login,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.red,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Padding(
+          padding: EdgeInsets.all(context.screenWidth / 16),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: loginFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppStrings.login,
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.red,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: context.screenHeight / 18),
-                    AppTextFormField(
-                      controller: emailController,
-                      hintText: AppStrings.enterEmail,
-                      errorMsg: AppStrings.emailRequired,
-                    ),
-                    SizedBox(height: 30),
-                    AppTextFormField(
-                      controller: passwordController,
-                      hintText: AppStrings.enterPassword,
-                      errorMsg: AppStrings.passwordRequired,
-                      isObscure: true,
-                    ),
-                    SizedBox(height: 30),
-                    SizedBox(
-                      width: context.screenWidth,
-                      child: authVM.isLoading
-                          ? AppLoader()
-                          : AppButton(
-                              buttonText: AppStrings.login,
-                              onPressed: _handleLogin,
-                            ),
-                    ),
+                      SizedBox(height: context.screenHeight / 18),
+                      AppTextFormField(
+                        controller: emailController,
+                        hintText: AppStrings.enterEmail,
+                        errorMsg: AppStrings.emailRequired,
+                      ),
+                      SizedBox(height: 30),
+                      AppTextFormField(
+                        controller: passwordController,
+                        hintText: AppStrings.enterPassword,
+                        errorMsg: AppStrings.passwordRequired,
+                        isObscure: true,
+                      ),
+                      SizedBox(height: 30),
+                      SizedBox(
+                        width: context.screenWidth,
+                        child: authVM.isLoading
+                            ? AppLoader()
+                            : AppButton(
+                                buttonText: AppStrings.login,
+                                onPressed: _handleLogin,
+                              ),
+                      ),
 
-                    SizedBox(height: 30),
-                    RichText(
-                      text: TextSpan(
-                        text: AppStrings.dontHaveAccount,
-                        style: TextStyle(color: AppColors.black),
-                        children: [
-                          TextSpan(
-                            text: AppStrings.signUp,
-                            style: TextStyle(
-                              color: AppColors.red,
-                              fontWeight: FontWeight.bold,
+                      SizedBox(height: 30),
+                      RichText(
+                        text: TextSpan(
+                          text: AppStrings.dontHaveAccount,
+                          style: TextStyle(color: AppColors.black),
+                          children: [
+                            TextSpan(
+                              text: AppStrings.signUp,
+                              style: TextStyle(
+                                color: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SignupView(),
+                                    ),
+                                  );
+                                },
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SignupView(),
-                                  ),
-                                );
-                              },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
