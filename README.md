@@ -158,11 +158,6 @@ flutter pub get
 
 1. **Clone the repository**
 
-   ```bash
-   git clone <repository-url>
-   cd notes_app
-   ```
-
 2. **Install dependencies**
 
    ```bash
