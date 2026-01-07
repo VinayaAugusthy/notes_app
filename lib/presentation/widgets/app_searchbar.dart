@@ -12,11 +12,18 @@ class AppSearchbar extends ConsumerStatefulWidget {
 }
 
 class _AppSearchbarState extends ConsumerState<AppSearchbar> {
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final notesVM = ref.watch(notesProvider);
     return TextFormField(
-      controller: notesVM.searchController,
+      controller: _searchController,
       cursorColor: AppColors.black54,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -33,13 +40,20 @@ class _AppSearchbarState extends ConsumerState<AppSearchbar> {
           borderSide: BorderSide(color: AppColors.black),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.search, color: AppColors.black54),
-          onPressed: () => {},
-        ),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear, color: AppColors.black54),
+                onPressed: () {
+                  _searchController.clear();
+                  ref.read(notesProvider).updateSearchQuery('');
+                },
+              )
+            : const Icon(Icons.search, color: AppColors.black54),
       ),
       textInputAction: TextInputAction.search,
-      onFieldSubmitted: (value) => {},
+      onChanged: (value) {
+        ref.read(notesProvider).updateSearchQuery(value);
+      },
     );
   }
 }

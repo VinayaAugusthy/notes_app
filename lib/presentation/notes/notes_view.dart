@@ -81,7 +81,7 @@ class _NotesViewState extends ConsumerState<NotesView> {
             Expanded(
               child: notesVM.isLoading
                   ? AppLoader()
-                  : notesVM.notes.isEmpty
+                  : notesVM.filteredNotes.isEmpty
                   ? Center(
                       child: Text(
                         AppStrings.noNotesFound,
@@ -93,9 +93,9 @@ class _NotesViewState extends ConsumerState<NotesView> {
                     )
                   : ListView.separated(
                       separatorBuilder: (context, index) => Divider(),
-                      itemCount: notesVM.notes.length,
+                      itemCount: notesVM.filteredNotes.length,
                       itemBuilder: (context, index) {
-                        final note = notesVM.notes[index];
+                        final note = notesVM.filteredNotes[index];
                         return ListTile(
                           title: Text(
                             note.title,

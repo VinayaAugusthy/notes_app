@@ -11,23 +11,18 @@ class NotesViewModel extends ChangeNotifier {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  TextEditingController searchController = TextEditingController();
 
   bool _isLoading = false;
   List<NoteModel> _notes = [];
+  String _searchQuery = '';
   String? _errorMessage;
 
   bool get isLoading => _isLoading;
+  String get searchQuery => _searchQuery;
   List<NoteModel> get notes => _notes;
   String? get errorMessage => _errorMessage;
 
   String? get currentUserId => _auth.currentUser?.uid;
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
 
   Future<bool> saveNote({
     required String title,
@@ -173,6 +168,20 @@ class NotesViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  List<NoteModel> get filteredNotes {
+    if (_searchQuery.isEmpty) {
+      return _notes;
+    }
+    return _notes
+        .where((note) => note.title.toLowerCase().contains(_searchQuery))
+        .toList();
+  }
+
+  void updateSearchQuery(String value) {
+    _searchQuery = value.trim().toLowerCase();
+    notifyListeners();
   }
 }
 
