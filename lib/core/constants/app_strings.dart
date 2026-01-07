@@ -36,4 +36,9 @@ class AppStrings {
       'You do not have permission to access this note';
   static const String failedToFetchNote = 'Failed to fetch note';
   static const String search = 'Search...';
+  static const String logout = 'Logout';
+  static const String logoutConfirmation = 'Are you sure you want to logout?';
+  static const String failedToLogout = 'Failed to logout. Please try again.';
+  static const String failedToLogin = 'Failed to login. Please try again.';
+  static const String failedToSignUp = 'Failed to sign up. Please try again.';
 }

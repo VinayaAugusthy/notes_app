@@ -57,6 +57,28 @@ class _NotesViewState extends ConsumerState<NotesView> {
     }
   }
 
+  Future<void> _showLogoutConfirmationDialog(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AppConfirmationDialog(
+          title: AppStrings.logout,
+          content: AppStrings.logoutConfirmation,
+        );
+      },
+    );
+
+    if (confirmed == true && mounted) {
+      try {
+        await ref.read(authProvider).signOut();
+      } catch (e) {
+        if (context.mounted) {
+          AppSnackbar.showError(context, AppStrings.failedToLogout);
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final notesVM = ref.watch(notesProvider);
@@ -65,85 +87,41 @@ class _NotesViewState extends ConsumerState<NotesView> {
         title: Text(AppStrings.notes),
         actions: [
           IconButton(
-            onPressed: () async {
-              await ref.read(authProvider).signOut();
+            onPressed: () {
+              _showLogoutConfirmationDialog(context);
             },
             icon: const Icon(Icons.logout),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            AppSearchbar(),
-            SizedBox(height: 10),
-            Expanded(
-              child: notesVM.isLoading
-                  ? AppLoader()
-                  : notesVM.filteredNotes.isEmpty
-                  ? Center(
-                      child: Text(
-                        AppStrings.noNotesFound,
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 16,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              AppSearchbar(),
+              SizedBox(height: 10),
+              Expanded(
+                child: notesVM.isLoading
+                    ? AppLoader()
+                    : notesVM.filteredNotes.isEmpty
+                    ? Center(
+                        child: Text(
+                          AppStrings.noNotesFound,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                    )
-                  : ListView.separated(
-                      separatorBuilder: (context, index) => Divider(),
-                      itemCount: notesVM.filteredNotes.length,
-                      itemBuilder: (context, index) {
-                        final note = notesVM.filteredNotes[index];
-                        return ListTile(
-                          title: Text(
-                            note.title,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            note.content,
-                            style: TextStyle(color: AppColors.grey),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddEditNotesView(noteId: note.id),
-                                    ),
-                                  );
-                                  if (mounted) {
-                                    ref.read(notesProvider).fetchNotes();
-                                  }
-                                },
-                                icon: Icon(Icons.edit, color: AppColors.blue),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  _showDeleteConfirmationDialog(
-                                    context,
-                                    note.id,
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: AppColors.red,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
+                      )
+                    : _buildNotesList(notesVM),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -160,6 +138,53 @@ class _NotesViewState extends ConsumerState<NotesView> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: const Icon(Icons.add, color: AppColors.white),
       ),
+    );
+  }
+
+  ListView _buildNotesList(NotesViewModel notesVM) {
+    return ListView.separated(
+      separatorBuilder: (context, index) => Divider(),
+      itemCount: notesVM.filteredNotes.length,
+      itemBuilder: (context, index) {
+        final note = notesVM.filteredNotes[index];
+        return ListTile(
+          title: Text(
+            note.title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            note.content,
+            style: TextStyle(color: AppColors.grey),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddEditNotesView(noteId: note.id),
+                    ),
+                  );
+                  if (mounted) {
+                    ref.read(notesProvider).fetchNotes();
+                  }
+                },
+                icon: Icon(Icons.edit, color: AppColors.blue),
+              ),
+              IconButton(
+                onPressed: () {
+                  _showDeleteConfirmationDialog(context, note.id);
+                },
+                icon: const Icon(Icons.delete, color: AppColors.red),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:notes_app/core/constants/app_strings.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final Ref ref;
@@ -36,7 +37,7 @@ class AuthViewModel extends ChangeNotifier {
       return false;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = 'An unexpected error occurred. Please try again.';
+      _errorMessage = AppStrings.failedToSignUp;
       notifyListeners();
       return false;
     }
@@ -64,14 +65,25 @@ class AuthViewModel extends ChangeNotifier {
       return false;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = 'An unexpected error occurred. Please try again.';
+      _errorMessage = AppStrings.failedToLogin;
       notifyListeners();
       return false;
     }
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+      await _auth.signOut();
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = AppStrings.failedToLogout;
+      notifyListeners();
+    }
   }
 
   String _getErrorMessage(String code) {

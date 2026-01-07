@@ -46,6 +46,7 @@ class _AppSearchbarState extends ConsumerState<AppSearchbar> {
                 onPressed: () {
                   _searchController.clear();
                   ref.read(notesProvider).updateSearchQuery('');
+                  FocusScope.of(context).unfocus();
                 },
               )
             : const Icon(Icons.search, color: AppColors.black54),
@@ -53,6 +54,9 @@ class _AppSearchbarState extends ConsumerState<AppSearchbar> {
       textInputAction: TextInputAction.search,
       onChanged: (value) {
         ref.read(notesProvider).updateSearchQuery(value);
+      },
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).unfocus();
       },
     );
   }
