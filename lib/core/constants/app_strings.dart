@@ -11,4 +11,24 @@ class AppStrings {
   static const String login = ' Login';
   static const String emptyString = '';
   static const String dontHaveAccount = 'Don\'t have an account?';
+  static const String titleRequired = 'Title is required';
+  static const String contentRequired = 'Content is required';
+  static const String addNote = 'Add Note';
+  static const String editNote = 'Edit Note';
+  static const String save = 'Save';
+  static const String title = 'Title';
+  static const String content = 'Content';
+  static const String noteCreatedSuccessfully = 'Note created successfully';
+  static const String noteUpdatedSuccessfully = 'Note updated successfully';
+  static const String failedToSaveNote = 'Failed to save note';
+  static const String deleteNote = 'Delete Note';
+  static const String deleteNoteConfirmation =
+      'Are you sure you want to delete this note?';
+  static const String no = 'No';
+  static const String yes = 'Yes';
+  static const String noteDeletedSuccessfully = 'Note deleted successfully';
+  static const String failedToDeleteNote = 'Failed to delete note';
+  static const String notes = 'Notes';
+  static const String noNotesFound = 'No notes found';
+  static const String userNotAuthenticated = 'User not authenticated';
 }
