@@ -22,6 +22,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final loginFormKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -86,7 +87,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         controller: passwordController,
                         hintText: AppStrings.enterPassword,
                         errorMsg: AppStrings.passwordRequired,
-                        isObscure: true,
+                        obscureText: _obscurePassword,
+                        onToggleVisibility: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
                       ),
                       SizedBox(height: 30),
                       SizedBox(

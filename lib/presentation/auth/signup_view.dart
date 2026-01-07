@@ -24,6 +24,8 @@ class _SignupViewState extends ConsumerState<SignupView> {
   final confirmPasswordController = TextEditingController();
 
   final signUpFormKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -95,32 +97,29 @@ class _SignupViewState extends ConsumerState<SignupView> {
                         controller: passwordController,
                         hintText: AppStrings.enterPassword,
                         errorMsg: AppStrings.passwordRequired,
-                        isObscure: true,
+                        obscureText: _obscurePassword,
+                        onToggleVisibility: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
                       ),
                       SizedBox(height: 30),
-                      TextFormField(
+                      AppTextFormField(
                         controller: confirmPasswordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: AppColors.red),
-                          ),
-                          hintText: AppStrings.confirmPassword,
-                        ),
-                        cursorColor: AppColors.red,
+                        hintText: AppStrings.confirmPassword,
+                        errorMsg: AppStrings.confirmPasswordRequired,
+                        obscureText: _obscureConfirmPassword,
+                        onToggleVisibility: () {
+                          setState(() {
+                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                          });
+                        },
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return AppStrings.confirmPasswordRequired;
-                          } else if (value.trim() !=
-                              passwordController.text.trim()) {
+                          if (value?.trim() != passwordController.text.trim()) {
                             return AppStrings.passwordsNotMatching;
-                          } else {
-                            return null;
                           }
+                          return null;
                         },
                       ),
                       SizedBox(height: 30),
